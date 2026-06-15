@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CallFlow AI — El recepcionista que nunca descansa y siempre vende</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;0,700;1,600;1,700&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  /* ─── TOKENS ─── */
+  :root {
+    --ink:         #0D1B2A;
+    --ink-mid:     #1A2E42;
+    --surface:     #F7F4EF;
+    --surface-alt: #FFFFFF;
+    --coral:       #E8705A;
+    --coral-light: #FBE8E3;
+    --mint:        #4ECDC4;
+    --text:        #1A1A2E;
+    --text-muted:  #5A6578;
+    --border:      #E2DDD6;
+    --ff-display:  'Fraunces', Georgia, serif;
+    --ff-body:     'DM Sans', system-ui, sans-serif;
+    --ff-mono:     'JetBrains Mono', monospace;
+    --r-sm:        8px;
+    --r-md:        14px;
+    --r-lg:        24px;
+    --shadow:      0 4px 24px rgba(13,27,42,0.10);
+    --shadow-lg:   0 12px 48px rgba(13,27,42,0.18);
+  }
+
+  /* ─── RESET ─── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--ff-body);
+    background: var(--surface);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  img { max-width: 100%; display: block; }
+  a { text-decoration: none; color: inherit; }
+
+  /* ─── UTILS ─── */
+  .container { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+  .tag {
+    display: inline-block;
+    font-family: var(--ff-body);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--coral);
+    background: var(--coral-light);
+    padding: 5px 12px;
+    border-radius: 100px;
+    margin-bottom: 18px;
+  }
+  .tag-mint {
+    color: #2a8f89;
+    background: #e0f7f6;
+  }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--coral);
+    color: #fff;
+    font-family: var(--ff-body);
+    font-size: 15px;
+    font-weight: 600;
+    padding: 14px 28px;
+    border-radius: var(--r-sm);
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    white-space: nowrap;
+  }
+  .btn-primary:hover { background: #d45f49; transform: translateY(-1px); }
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    color: #fff;
+    font-family: var(--ff-body);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 20px;
+    border-radius: var(--r-sm);
+    border: 1.5px solid rgba(255,255,255,0.35);
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .btn-ghost:hover { border-color: #fff; background: rgba(255,255,255,0.08); }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(13,27,42,0.94);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 62px;
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .logo {
+    font-family: var(--ff-display);
+    font-size: 21px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.5px;
+  }
+  .logo span { color: var(--coral); }
+  .nav-cta { display: flex; align-items: center; gap: 12px; }
+  .nav-link {
+    color: rgba(255,255,255,0.65);
+    font-size: 14px;
+    font-weight: 500;
+    display: none;
+  }
+  @media(min-width:768px){ .nav-link { display: block; } }
+
+  /* ─── HERO ─── */
+  #hero {
+    background: var(--ink);
+    padding: 140px 0 80px;
+    overflow: hidden;
+    position: relative;
+  }
+  #hero::before {
+    content: '';
+    position: absolute;
+    top: -120px; right: -180px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(232,112,90,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 52px;
+    align-items: center;
+  }
+  @media(min-width:900px){
+    .hero-inner { grid-template-columns: 1fr 1fr; gap: 64px; }
+  }
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mint);
+    margin-bottom: 22px;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--mint);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100%{ opacity:1; transform:scale(1); }
+    50%{ opacity:0.4; transform:scale(1.4); }
+  }
+  .hero-h1 {
+    font-family: var(--ff-display);
+    font-size: clamp(36px, 5.5vw, 58px);
+    font-weight: 700;
+    line-height: 1.08;
+    color: #fff;
+    letter-spacing: -1.5px;
+    margin-bottom: 22px;
+  }
+  .hero-h1 em {
+    font-style: italic;
+    color: var(--coral);
+  }
+  .hero-sub {
+    font-size: 17px;
+    color: rgba(255,255,255,0.62);
+    line-height: 1.65;
+    max-width: 480px;
+    margin-bottom: 36px;
+  }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+  .hero-note {
+    font-size: 12px;
+    color: rgba(255,255,255,0.38);
+    margin-top: 16px;
+  }
+
+  /* ─── CHAT DEMO ─── */
+  .chat-demo {
+    background: #fff;
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    max-width: 380px;
+    width: 100%;
+    margin: 0 auto;
+  }
+  .chat-header {
+    background: #075E54;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .chat-avatar {
+    width: 40px; height: 40px;
+    background: var(--mint);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .chat-info { flex: 1; }
+  .chat-name { color: #fff; font-size: 15px; font-weight: 600; }
+  .chat-status { color: rgba(255,255,255,0.65); font-size: 11px; display: flex; align-items: center; gap: 5px; }
+  .chat-status::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: #25D366;
+    border-radius: 50%;
+  }
+  .chat-body {
+    background: #ECE5DD url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c5bdb3' fill-opacity='0.15'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    padding: 16px;
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .msg {
+    max-width: 82%;
+    padding: 9px 13px;
+    border-radius: 12px;
+    font-size: 13.5px;
+    line-height: 1.5;
+    position: relative;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+  }
+  .msg.visible { opacity: 1; transform: translateY(0); }
+  .msg-user {
+    background: #fff;
+    border-radius: 12px 12px 12px 2px;
+    align-self: flex-start;
+    color: #1a1a1a;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  }
+  .msg-bot {
+    background: #DCF8C6;
+    border-radius: 12px 12px 2px 12px;
+    align-self: flex-end;
+    color: #1a1a1a;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  }
+  .msg-time {
+    font-size: 10px;
+    color: rgba(0,0,0,0.4);
+    text-align: right;
+    margin-top: 3px;
+  }
+  .typing-indicator {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    padding: 12px 16px;
+    background: #DCF8C6;
+    border-radius: 12px 12px 2px 12px;
+    align-self: flex-end;
+    opacity: 0;
+    transition: opacity 0.3s;
+    width: 56px;
+  }
+  .typing-indicator.visible { opacity: 1; }
+  .typing-dot {
+    width: 7px; height: 7px;
+    background: #888;
+    border-radius: 50%;
+    animation: typing 1.2s ease-in-out infinite;
+  }
+  .typing-dot:nth-child(2){ animation-delay: 0.2s; }
+  .typing-dot:nth-child(3){ animation-delay: 0.4s; }
+  @keyframes typing {
+    0%,60%,100%{ transform:translateY(0); }
+    30%{ transform:translateY(-5px); }
+  }
+
+  /* ─── SECTION BASE ─── */
+  section { padding: 88px 0; }
+  .section-dark { background: var(--ink); color: #fff; }
+  .section-white { background: var(--surface-alt); }
+  .section-surface { background: var(--surface); }
+  .section-coral { background: var(--coral-light); }
+
+  .s-header { text-align: center; margin-bottom: 56px; }
+  .s-title {
+    font-family: var(--ff-display);
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -1px;
+    margin-bottom: 16px;
+  }
+  .s-title em { font-style: italic; color: var(--coral); }
+  .s-sub {
+    font-size: 17px;
+    color: var(--text-muted);
+    max-width: 560px;
+    margin: 0 auto;
+    line-height: 1.65;
+  }
+  .section-dark .s-sub { color: rgba(255,255,255,0.55); }
+  .section-dark .s-title { color: #fff; }
+
+  /* ─── PROBLEMA ─── */
+  .pain-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  @media(min-width:640px){ .pain-grid { grid-template-columns: 1fr 1fr; } }
+  @media(min-width:900px){ .pain-grid { grid-template-columns: repeat(3, 1fr); } }
+  .pain-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--r-md);
+    padding: 32px 28px;
+  }
+  .pain-icon {
+    font-size: 34px;
+    margin-bottom: 18px;
+    display: block;
+  }
+  .pain-card h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 10px;
+    line-height: 1.3;
+  }
+  .pain-card p { font-size: 14.5px; color: rgba(255,255,255,0.55); line-height: 1.65; }
+  .pain-stat {
+    font-family: var(--ff-mono);
+    font-size: 11px;
+    color: var(--coral);
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+
+  /* ─── QUÉ HACE ─── */
+  .features-wrap {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  @media(min-width:640px){ .features-wrap { grid-template-columns: 1fr 1fr; } }
+  @media(min-width:900px){ .features-wrap { grid-template-columns: repeat(3, 1fr); } }
+  .feat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 28px 24px;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .feat-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+  .feat-icon {
+    width: 44px; height: 44px;
+    background: var(--coral-light);
+    border-radius: var(--r-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    margin-bottom: 16px;
+  }
+  .feat-icon.mint { background: #e0f7f6; }
+  .feat-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+  .feat-card p { font-size: 13.5px; color: var(--text-muted); line-height: 1.6; }
+
+  /* ─── COMPARATIVA ─── */
+  .compare-wrap {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+  @media(min-width:700px){ .compare-wrap { grid-template-columns: 1fr 1fr; } }
+  .compare-card {
+    border-radius: var(--r-md);
+    padding: 36px 30px;
+  }
+  .compare-human {
+    background: #fff;
+    border: 2px solid var(--border);
+  }
+  .compare-agent {
+    background: var(--ink);
+    border: 2px solid var(--coral);
+    position: relative;
+    overflow: hidden;
+  }
+  .compare-agent::before {
+    content: '✦ Recomendado';
+    position: absolute;
+    top: 16px; right: -28px;
+    background: var(--coral);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 40px;
+    transform: rotate(35deg);
+    letter-spacing: 0.05em;
+  }
+  .compare-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .compare-agent .compare-label { color: rgba(255,255,255,0.45); }
+  .compare-title { font-size: 20px; font-weight: 700; margin-bottom: 24px; }
+  .compare-agent .compare-title { color: #fff; }
+  .compare-price {
+    font-family: var(--ff-mono);
+    font-size: 40px;
+    font-weight: 500;
+    letter-spacing: -1px;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .compare-agent .compare-price { color: var(--coral); }
+  .compare-period { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; }
+  .compare-agent .compare-period { color: rgba(255,255,255,0.45); }
+  .compare-rows { display: flex; flex-direction: column; gap: 0; }
+  .compare-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .compare-agent .compare-row { border-bottom-color: rgba(255,255,255,0.08); }
+  .compare-row:last-child { border-bottom: none; }
+  .compare-row-label { color: var(--text-muted); }
+  .compare-agent .compare-row-label { color: rgba(255,255,255,0.5); }
+  .compare-row-val { font-weight: 600; }
+  .compare-agent .compare-row-val { color: #fff; }
+  .val-bad { color: #c0392b; }
+  .val-good { color: #27ae60; }
+  .compare-saving {
+    margin-top: 24px;
+    padding: 14px 18px;
+    background: rgba(232,112,90,0.12);
+    border-radius: var(--r-sm);
+    border-left: 3px solid var(--coral);
+  }
+  .compare-saving p { font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.5; }
+  .compare-saving strong { color: var(--coral); }
+  .compare-fiscal {
+    margin-top: 12px;
+    padding: 12px 16px;
+    background: rgba(78,205,196,0.1);
+    border-radius: var(--r-sm);
+    font-size: 12.5px;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.5;
+  }
+  .compare-fiscal strong { color: var(--mint); }
+
+  /* ─── CÓMO FUNCIONA ─── */
+  .steps-wrap {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+  }
+  @media(min-width:700px){
+    .steps-wrap { grid-template-columns: 1fr 1fr; }
+  }
+  .step-card {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  .step-num {
+    font-family: var(--ff-mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--coral);
+    background: var(--coral-light);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    letter-spacing: 0.05em;
+  }
+  .step-body h3 { font-size: 16px; font-weight: 600; margin-bottom: 7px; }
+  .step-body p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+  .step-timeline {
+    font-family: var(--ff-mono);
+    font-size: 11px;
+    color: var(--mint);
+    margin-top: 8px;
+  }
+
+  /* ─── PRECIOS ─── */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  @media(min-width:700px){ .pricing-grid { grid-template-columns: 1fr 1fr; } }
+  @media(min-width:960px){ .pricing-grid { grid-template-columns: repeat(3, 1fr); } }
+  .price-card {
+    background: var(--surface-alt);
+    border: 1.5px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 32px 28px;
+    position: relative;
+  }
+  .price-card.featured {
+    background: var(--ink);
+    border-color: var(--coral);
+    box-shadow: 0 0 0 4px rgba(232,112,90,0.1);
+  }
+  .price-badge {
+    position: absolute;
+    top: -12px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--coral);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 16px;
+    border-radius: 100px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .price-card-name { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 8px; }
+  .price-card.featured .price-card-name { color: rgba(255,255,255,0.5); }
+  .price-amount {
+    font-family: var(--ff-mono);
+    font-size: 44px;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: -1.5px;
+    line-height: 1;
+  }
+  .price-amount span { font-size: 20px; vertical-align: super; }
+  .price-card.featured .price-amount { color: #fff; }
+  .price-period { font-size: 13px; color: var(--text-muted); margin-bottom: 6px; }
+  .price-card.featured .price-period { color: rgba(255,255,255,0.45); }
+  .price-setup { font-size: 13px; color: var(--text-muted); padding: 10px 0; border-bottom: 1px solid var(--border); margin-bottom: 22px; }
+  .price-card.featured .price-setup { color: rgba(255,255,255,0.45); border-bottom-color: rgba(255,255,255,0.1); }
+  .price-features { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+  .price-features li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+  .price-card.featured .price-features li { color: rgba(255,255,255,0.65); }
+  .price-features li::before {
+    content: '✓';
+    color: var(--mint);
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .price-cta {
+    display: block;
+    text-align: center;
+    padding: 13px;
+    border-radius: var(--r-sm);
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+    font-family: var(--ff-body);
+  }
+  .price-cta-outline {
+    background: transparent;
+    border: 1.5px solid var(--border);
+    color: var(--text);
+  }
+  .price-cta-outline:hover { border-color: var(--coral); color: var(--coral); }
+  .price-cta-fill {
+    background: var(--coral);
+    color: #fff;
+  }
+  .price-cta-fill:hover { background: #d45f49; }
+
+  /* ─── NOSOTROS ─── */
+  .team-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  @media(min-width:640px){ .team-grid { grid-template-columns: 1fr 1fr; } }
+  .team-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 36px 30px;
+  }
+  .team-initial {
+    width: 56px; height: 56px;
+    background: var(--ink);
+    color: var(--coral);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--ff-display);
+    font-size: 24px;
+    font-weight: 700;
+    font-style: italic;
+    margin-bottom: 20px;
+  }
+  .team-card h3 { font-size: 19px; font-weight: 700; margin-bottom: 4px; }
+  .team-role { font-size: 12px; font-weight: 600; color: var(--coral); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px; }
+  .team-card p { font-size: 14.5px; color: var(--text-muted); line-height: 1.65; }
+  .team-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .team-tag {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    border-radius: 100px;
+  }
+
+  /* ─── CTA FINAL ─── */
+  #cta-final {
+    background: var(--ink);
+    padding: 100px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  #cta-final::after {
+    content: '';
+    position: absolute;
+    bottom: -100px; left: 50%;
+    transform: translateX(-50%);
+    width: 700px; height: 300px;
+    background: radial-gradient(ellipse, rgba(232,112,90,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  #cta-final h2 {
+    font-family: var(--ff-display);
+    font-size: clamp(30px, 5vw, 52px);
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -1px;
+    line-height: 1.1;
+    margin-bottom: 18px;
+  }
+  #cta-final h2 em { font-style: italic; color: var(--coral); }
+  #cta-final p { font-size: 17px; color: rgba(255,255,255,0.55); max-width: 520px; margin: 0 auto 40px; line-height: 1.6; }
+  .cta-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-width: 460px;
+    margin: 0 auto;
+    padding: 36px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--r-lg);
+  }
+  .cta-form input, .cta-form select {
+    padding: 13px 16px;
+    border-radius: var(--r-sm);
+    border: 1.5px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.06);
+    color: #fff;
+    font-family: var(--ff-body);
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .cta-form input::placeholder { color: rgba(255,255,255,0.35); }
+  .cta-form input:focus, .cta-form select:focus { border-color: var(--coral); }
+  .cta-form select { color: rgba(255,255,255,0.55); }
+  .cta-form select option { background: var(--ink); color: #fff; }
+  .cta-submit {
+    background: var(--coral);
+    color: #fff;
+    font-family: var(--ff-body);
+    font-size: 15px;
+    font-weight: 600;
+    padding: 15px;
+    border: none;
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .cta-submit:hover { background: #d45f49; }
+  .cta-disclaimer { font-size: 12px; color: rgba(255,255,255,0.3); text-align: center; margin-top: 8px; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: #060f18;
+    color: rgba(255,255,255,0.4);
+    text-align: center;
+    padding: 32px 24px;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  footer strong { color: rgba(255,255,255,0.7); }
+  footer a { color: var(--coral); }
+
+  /* ─── TRUST BAR ─── */
+  .trust-bar {
+    background: var(--ink-mid);
+    padding: 18px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .trust-inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 28px 48px;
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .trust-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    font-weight: 500;
+  }
+  .trust-item span { color: var(--mint); font-size: 15px; }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(20px); }
+    to { opacity:1; transform:translateY(0); }
+  }
+  .fade-up { animation: fadeUp 0.6s ease forwards; }
+
+  /* ─── SCROLL REVEAL ─── */
+  .reveal { opacity:0; transform:translateY(24px); transition: opacity 0.55s ease, transform 0.55s ease; }
+  .reveal.in { opacity:1; transform:translateY(0); }
+
+  @media(prefers-reduced-motion: reduce){
+    .reveal, .msg, .typing-indicator { transition: none; animation: none; opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="logo">CallFlow<span>AI</span></div>
+    <div class="nav-cta">
+      <a href="#cta-final" class="nav-link">Precios</a>
+      <a href="#cta-final" class="nav-link">Quiénes somos</a>
+      <a href="#cta-final" class="btn-ghost">Solicita tu demo →</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-copy fade-up">
+        <div class="hero-eyebrow">Disponible ahora · España · WhatsApp + Voz</div>
+        <h1 class="hero-h1">El recepcionista que nunca descansa<br><em>y siempre vende.</em></h1>
+        <p class="hero-sub">Mientras tu equipo atiende pacientes, nuestro agente IA responde 24/7, califica, agenda y vende — y solo te pasa lo que importa.</p>
+        <div class="hero-actions">
+          <a href="#cta-final" class="btn-primary">Solicita una demo gratuita →</a>
+        </div>
+        <p class="hero-note">Sin permanencia. Diagnóstico gratuito de 20 minutos.</p>
+      </div>
+
+      <!-- CHAT DEMO -->
+      <div class="chat-demo" id="chatDemo">
+        <div class="chat-header">
+          <div class="chat-avatar">🦷</div>
+          <div class="chat-info">
+            <div class="chat-name">Clínica Dental Vallès</div>
+            <div class="chat-status">Agente activo 24/7</div>
+          </div>
+        </div>
+        <div class="chat-body" id="chatBody">
+          <!-- msgs injected by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-inner">
+    <div class="trust-item"><span>⚡</span> Respuesta en &lt;3 segundos</div>
+    <div class="trust-item"><span>📅</span> Integración con Google Calendar y Calendly</div>
+    <div class="trust-item"><span>🔒</span> RGPD compliant</div>
+    <div class="trust-item"><span>🇪🇸</span> Diseñado para el mercado español</div>
+    <div class="trust-item"><span>🤝</span> Onboarding en 10 días hábiles</div>
+  </div>
+</div>
+
+<!-- EL PROBLEMA -->
+<section class="section-dark">
+  <div class="container">
+    <div class="s-header reveal">
+      <div class="tag" style="background:rgba(232,112,90,0.15);color:var(--coral);">El problema real</div>
+      <h2 class="s-title" style="color:#fff;">Tu recepcionista trabaja 8 horas.<br><em>Los pacientes, 24.</em></h2>
+      <p class="s-sub">Cada llamada perdida fuera de horario, cada WhatsApp sin respuesta en 5 minutos, es una cita que se va a la competencia.</p>
+    </div>
+    <div class="pain-grid">
+      <div class="pain-card reveal">
+        <span class="pain-icon">📵</span>
+        <h3>Llamadas perdidas fuera de horario</h3>
+        <p>El 43% de los intentos de contacto ocurren fuera del horario de apertura. Sin respuesta inmediata, el paciente llama al siguiente resultado de Google.</p>
+        <div class="pain-stat">→ Hasta 8–12 citas perdidas al mes por clínica</div>
+      </div>
+      <div class="pain-card reveal">
+        <span class="pain-icon">⏳</span>
+        <h3>Recepción atrapada en tareas repetitivas</h3>
+        <p>Confirmaciones, recordatorios, preguntas de precio, información de horarios… tu equipo dedica horas al día a tareas que no necesitan criterio humano.</p>
+        <div class="pain-stat">→ 2–3 horas diarias en gestión de bajo valor</div>
+      </div>
+      <div class="pain-card reveal">
+        <span class="pain-icon">💸</span>
+        <h3>El personal cualificado es caro y escaso</h3>
+        <p>Una recepcionista formada en Barcelona cuesta 2.400–2.800 €/mes todo incluido. Y cuando se va, empiezas de cero: selección, formación, adaptación.</p>
+        <div class="pain-stat">→ 28.800–33.600 € al año, más rotación</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUÉ HACE -->
+<section class="section-white">
+  <div class="container">
+    <div class="s-header reveal">
+      <div class="tag">Capacidades del agente</div>
+      <h2 class="s-title">Lo que hace el agente.<br><em>Lo que hace mejor que una persona.</em></h2>
+      <p class="s-sub">No es un chatbot con respuestas predefinidas. Es un agente entrenado con los flujos, servicios y voz específicos de tu clínica.</p>
+    </div>
+    <div class="features-wrap">
+      <div class="feat-card reveal">
+        <div class="feat-icon">⚡</div>
+        <h3>Responde en segundos, siempre</h3>
+        <p>WhatsApp 24/7. Sin esperas, sin música de hold. Cada mensaje contestado en menos de 3 segundos a cualquier hora del día o de la noche.</p>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon">📅</div>
+        <h3>Agenda y confirma citas</h3>
+        <p>Gestiona disponibilidad en tiempo real con Google Calendar o Calendly. Confirma, reprograma y envía recordatorios automáticos 24h antes.</p>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon mint">🎯</div>
+        <h3>Califica leads sin esfuerzo</h3>
+        <p>Recoge nombre, motivo de consulta, urgencia y preferencias antes de pasarte el contacto. Llegas a cada conversación con contexto completo.</p>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon mint">📣</div>
+        <h3>Detecta huecos y reacciona</h3>
+        <p>Cuando hay una cancelación, te alerta para cubrir el hueco y puede contactar a pacientes en lista de espera de forma automática.</p>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon">💡</div>
+        <h3>Vende sin presionar</h3>
+        <p>Aplica técnicas de cross-selling y upselling de forma natural en el 100% de las conversaciones. Propone tratamientos complementarios cuando el momento es el adecuado.</p>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon">🔁</div>
+        <h3>Reactiva pacientes dormidos</h3>
+        <p>Campañas mensuales automáticas a pacientes inactivos. Seguimiento programado 48h después de cada cita. Sin que tengas que recordarlo.</p>
+      </div>
+    </div>
+
+    <div style="margin-top:48px; padding:28px 32px; background:var(--coral-light); border-radius:var(--r-md); border-left:4px solid var(--coral); max-width:680px; margin-left:auto; margin-right:auto;" class="reveal">
+      <p style="font-size:14px; color:#7a3a2e; line-height:1.7;">
+        <strong style="display:block; margin-bottom:6px; font-size:15px;">¿Qué NO hace el agente?</strong>
+        No toma decisiones clínicas ni da consejos médicos. No gestiona quejas graves ni situaciones emocionalmente complejas. Cuando detecta una situación que necesita criterio humano, transfiere con todo el contexto de la conversación. Ser honesto sobre los límites forma parte de lo que nos diferencia.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARATIVA -->
+<section class="section-surface">
+  <div class="container">
+    <div class="s-header reveal">
+      <div class="tag tag-mint">Análisis económico</div>
+      <h2 class="s-title">Recepcionista humana<br>vs <em>agente IA</em></h2>
+      <p class="s-sub">Datos reales del mercado laboral de Barcelona 2026. Sin trampa, sin letra pequeña.</p>
+    </div>
+    <div class="compare-wrap">
+      <div class="compare-card compare-human reveal">
+        <div class="compare-label">Opción A</div>
+        <div class="compare-title">Recepcionista a jornada completa</div>
+        <div class="compare-price">2.600<span>€</span></div>
+        <div class="compare-period">al mes · coste total empresa estimado</div>
+        <div class="compare-rows">
+          <div class="compare-row">
+            <span class="compare-row-label">Salario bruto</span>
+            <span class="compare-row-val">~1.700 €/mes</span>
+          </div>
+          <div class="compare-row">
+            <span class="compare-row-label">S. Social empresa (~31%)</span>
+            <span class="compare-row-val">~527 €/mes</span>
+          </div>
+          <div class="compare-row">
+            <span class="compare-row-label">Pagas extra prorrateadas</span>
+            <span class="compare-row-val">~283 €/mes</span>
+          </div>
+          <div class="compare-row">
+            <span class="compare-row-label">Horario</span>
+            <span class="compare-row-val val-bad">L–V, 9–18h</span>
+          </div>
+          <div class="compare-row">
+            <span class="compare-row-label">Vacaciones / bajas</span>
+            <span class="compare-row-val val-bad">Sí, con coste</span>
+          </div>
+          <div class="compare-row">
+            <span class="compare-row-label">Gestión y formación</span>
+            <span class="compare-row-val val-bad">Continua</span>
+          </div>
+          <div class="compare-row">
+            <span class="compare-row-label">Conversaciones simultáneas</span>
+            <span class="compare-row-val val-bad">1</span>
+          </div>
+          <div class="compare-row">
+            <span class="compare-row-label">Deducción fiscal empresa</span>
+            <span class="compare-row-val val-bad">Parcial</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="compare-card compare-agent reveal">
+        <div class="compare-label">Opción B</div>
+        <div class="compare-title" style="color:#fff;">Agente IA CallFlow</div>
+        <div class="compare-price">950<span style="font-size:20px;vertical-align:super;color:var(--coral);">€</span></div>
+        <div class="compare-period">al mes · precio normal · todo incluido</div>
+        <div class="compare-rows">
+          <div class="compare-row">
+            <span class="compare-row-label">Setup (pago único)</span>
+            <span class="compare-row-val" style="color:#fff;">1.500 €</span>
+          </div>
+          <div class="compare-row">
+            <span class="compare-row-label">Seguridad Social</span>
+            <span class="compare-row-val" style="color:var(--mint);">0 €</span>
+          </div>
+          <div class="compare-row">
+            <span class="compare-row-label">Formación / rotación</span>
+            <span class="compare-row-val" style="color:var(--mint);">0 €</span>
+          </div>
+          <div class="compare-row">
+            <span class="compare-row-label">Horario</span>
+            <span class="compare-row-val" style="color:var(--mint);">24/7 · 365 días</span>
+          </div>
+          <div class="compare-row">
+            <span class="compare-row-label">Vacaciones / bajas</span>
+            <span class="compare-row-val" style="color:var(--mint);">Nunca</span>
+          </div>
+          <div class="compare-row">
+            <span class="compare-row-label">Gestión mensual</span>
+            <span class="compare-row-val" style="color:var(--mint);">Solo reportes</span>
+          </div>
+          <div class="compare-row">
+            <span class="compare-row-label">Conversaciones simultáneas</span>
+            <span class="compare-row-val" style="color:var(--mint);">Ilimitadas</span>
+          </div>
+          <div class="compare-row">
+            <span class="compare-row-label">Deducción fiscal empresa</span>
+            <span class="compare-row-val" style="color:var(--mint);">100% como gasto</span>
+          </div>
+        </div>
+        <div class="compare-saving">
+          <p>Ahorro estimado frente a una recepcionista:<br><strong>22.000–27.000 € al año.</strong></p>
+        </div>
+        <div class="compare-fiscal">
+          <strong>Ventaja fiscal:</strong> La factura de CallFlow AI es un gasto de empresa 100% deducible. La Seguridad Social que pagas por un empleado no lo es de la misma forma. El ahorro real es mayor de lo que parece a primera vista.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CÓMO FUNCIONA -->
+<section class="section-white">
+  <div class="container">
+    <div class="s-header reveal">
+      <div class="tag">El proceso</div>
+      <h2 class="s-title">De la firma al agente activo<br><em>en 10 días hábiles.</em></h2>
+      <p class="s-sub">Un proceso claro y sin sorpresas. Tú nos cuentas cómo funciona tu clínica. Nosotros configuramos, probamos y activamos.</p>
+    </div>
+    <div class="steps-wrap">
+      <div class="step-card reveal">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <h3>Diagnóstico (gratuito)</h3>
+          <p>Reunión de 20 minutos para entender tu flujo actual, tus puntos de dolor y si un agente IA encaja con tu operación. Sin compromiso.</p>
+          <div class="step-timeline">Día 0 · Videollamada</div>
+        </div>
+      </div>
+      <div class="step-card reveal">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <h3>Diseño y entrenamiento</h3>
+          <p>Mapeamos tus servicios, precios, flujos de cita y objeciones frecuentes. Entrenamos al agente con la voz y los procesos específicos de tu clínica.</p>
+          <div class="step-timeline">Días 1–6 · Con tu equipo</div>
+        </div>
+      </div>
+      <div class="step-card reveal">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <h3>Pruebas y ajuste fino</h3>
+          <p>Simulamos decenas de conversaciones reales antes de activar. Ajustamos respuestas, tono y flujos hasta que el agente funciona exactamente como necesitas.</p>
+          <div class="step-timeline">Días 7–9 · QA exhaustivo</div>
+        </div>
+      </div>
+      <div class="step-card reveal">
+        <div class="step-num">04</div>
+        <div class="step-body">
+          <h3>Activación y seguimiento</h3>
+          <p>El agente entra en producción. Primera semana con supervisión activa. Reportes mensuales de métricas: conversaciones, citas agendadas y conversión.</p>
+          <div class="step-timeline">Día 10 · En marcha</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRECIOS -->
+<section class="section-surface" id="precios">
+  <div class="container">
+    <div class="s-header reveal">
+      <div class="tag">Precios</div>
+      <h2 class="s-title">Transparente.<br><em>Sin letra pequeña.</em></h2>
+      <p class="s-sub">Empezamos con un piloto a precio especial para construir caso de éxito juntos. Después, precio completo según lo que necesites.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card reveal">
+        <div class="price-card-name">Piloto · 3 meses</div>
+        <div class="price-amount"><span>€</span>450</div>
+        <div class="price-period">al mes durante el piloto</div>
+        <div class="price-setup">Setup: 900 € · pago único</div>
+        <ul class="price-features">
+          <li>Agente WhatsApp completo</li>
+          <li>Integración con tu calendario</li>
+          <li>Confirmaciones y recordatorios</li>
+          <li>Calificación de leads</li>
+          <li>Soporte directo con el equipo fundador</li>
+          <li>Reportes mensuales de métricas</li>
+        </ul>
+        <a href="#cta-final" class="price-cta price-cta-outline">Solicitar piloto</a>
+      </div>
+
+      <div class="price-card featured reveal">
+        <div class="price-badge">Más popular</div>
+        <div class="price-card-name" style="color:rgba(255,255,255,0.45);">Bundle WhatsApp + Voz</div>
+        <div class="price-amount" style="color:#fff;"><span style="color:var(--coral);">€</span>1.400</div>
+        <div class="price-period" style="color:rgba(255,255,255,0.45);">al mes · precio normal</div>
+        <div class="price-setup" style="color:rgba(255,255,255,0.35);border-color:rgba(255,255,255,0.1);">Setup: 1.500 € · pago único</div>
+        <ul class="price-features">
+          <li>Agente WhatsApp 24/7</li>
+          <li>Agente de Voz (llamadas entrantes)</li>
+          <li>Todo lo del piloto incluido</li>
+          <li>Cross-selling y upselling automático</li>
+          <li>Reactivación de pacientes dormidos</li>
+          <li>Prioridad de soporte</li>
+        </ul>
+        <a href="#cta-final" class="price-cta price-cta-fill">Solicitar demo gratuita →</a>
+      </div>
+
+      <div class="price-card reveal">
+        <div class="price-card-name">Solo WhatsApp o Solo Voz</div>
+        <div class="price-amount"><span>€</span>850</div>
+        <div class="price-period">al mes · solo WhatsApp</div>
+        <div class="price-setup">Solo Voz: 1.100 €/mes · Setup: 1.500 €</div>
+        <ul class="price-features">
+          <li>Canal único a elegir</li>
+          <li>Ideal para empezar en un canal</li>
+          <li>Todas las funciones del agente</li>
+          <li>Métricas y reportes incluidos</li>
+          <li>Ampliable al bundle en cualquier momento</li>
+        </ul>
+        <a href="#cta-final" class="price-cta price-cta-outline">Solicitar demo gratuita</a>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:13px;color:var(--text-muted);margin-top:32px;" class="reveal">
+      Todos los precios excluyen IVA. Factura de empresa 100% deducible como gasto.
+    </p>
+  </div>
+</section>
+
+<!-- QUIÉNES SOMOS -->
+<section class="section-white">
+  <div class="container">
+    <div class="s-header reveal">
+      <div class="tag">El equipo</div>
+      <h2 class="s-title">Experiencia real.<br><em>Sin exagerar.</em></h2>
+      <p class="s-sub">Somos un equipo pequeño de dos personas con experiencia directa en los dos problemas que resolvemos: atención al cliente de alto volumen y crecimiento comercial.</p>
+    </div>
+    <div class="team-grid">
+      <div class="team-card reveal">
+        <div class="team-initial">C</div>
+        <h3>Carlos</h3>
+        <div class="team-role">Operaciones & IA</div>
+        <p>Más de 10 años gestionando call centers de alto volumen en LATAM, USA y EMEA. Sabe exactamente qué pregunta hace un paciente a las 11 de la noche y cómo debe responderle un agente para que no se vaya a la competencia.</p>
+        <div class="team-tags">
+          <span class="team-tag">Call centers LATAM/EMEA</span>
+          <span class="team-tag">Flujos de atención</span>
+          <span class="team-tag">KPIs & conversión</span>
+          <span class="team-tag">Diseño de agentes IA</span>
+        </div>
+      </div>
+      <div class="team-card reveal">
+        <div class="team-initial">K</div>
+        <h3>Kate</h3>
+        <div class="team-role">Marketing & Estrategia</div>
+        <p>Fractional CMO con experiencia en growth marketing, posicionamiento y escalado de proyectos. Aporta la estrategia de adquisición de clientes, el mensaje que conecta con el dueño de clínica y la capacidad de escalar lo que funciona.</p>
+        <div class="team-tags">
+          <span class="team-tag">Growth marketing</span>
+          <span class="team-tag">Posicionamiento</span>
+          <span class="team-tag">Escalado de proyectos</span>
+          <span class="team-tag">Estrategia comercial</span>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:40px;padding:24px 28px;background:var(--surface);border-radius:var(--r-md);border:1px solid var(--border);max-width:640px;margin-left:auto;margin-right:auto;text-align:center;" class="reveal">
+      <p style="font-size:14.5px;color:var(--text-muted);line-height:1.7;">
+        <strong style="color:var(--text);">Una aclaración honesta:</strong> Este es nuestro primer piloto real con agentes IA para clínicas. No tenemos cien clientes ni casos de éxito publicados. Lo que sí tenemos es experiencia profunda en los problemas que resolvemos — y la honestidad de decirte exactamente dónde estamos.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section id="cta-final">
+  <div class="container">
+    <h2>¿Tu clínica<br>merece un agente <em>así?</em></h2>
+    <p>Solicita una demo gratuita de 20 minutos. Te mostramos el agente en acción con ejemplos del sector salud. Sin compromiso.</p>
+    <div class="cta-form">
+      <input type="text" placeholder="Tu nombre" id="f-name">
+      <input type="text" placeholder="Nombre de tu clínica" id="f-clinic">
+      <input type="tel" placeholder="WhatsApp o teléfono" id="f-phone">
+      <select id="f-type">
+        <option value="" disabled selected>Tipo de clínica</option>
+        <option>Clínica dental</option>
+        <option>Medicina estética</option>
+        <option>Fisioterapia / rehabilitación</option>
+        <option>Clínica médica general</option>
+        <option>Centro de nutrición / bienestar</option>
+        <option>Otro</option>
+      </select>
+      <button class="cta-submit" onclick="handleSubmit()">
+        Solicitar demo gratuita de 20 min →
+      </button>
+      <p class="cta-disclaimer">Sin spam. Solo te contactamos para confirmar la cita.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p><strong>CallFlow AI</strong> — Agentes de inteligencia artificial para clínicas y consultorios</p>
+  <p style="margin-top:6px;">Barcelona, España · <a href="mailto:hola@callflow.ai">hola@callflow.ai</a></p>
+  <p style="margin-top:12px;font-size:12px;">© 2026 CallFlow AI · Aviso legal · Política de privacidad · RGPD</p>
+</footer>
+
+<script>
+// ─── CHAT ANIMATION ───
+const messages = [
+  { type: 'user', text: '¡Hola! ¿Hacéis limpiezas dentales? ¿Cuánto cuesta?', delay: 800 },
+  { type: 'typing', delay: 1600 },
+  { type: 'bot', text: '¡Hola! 👋 Sí, hacemos limpiezas. La tarifa es de 65€ e incluye revisión completa y radiografía básica si es tu primera visita.', delay: 2200 },
+  { type: 'user', text: '¿Tenéis hueco esta semana?', delay: 4000 },
+  { type: 'typing', delay: 4800 },
+  { type: 'bot', text: 'Déjame ver disponibilidad... Tenemos el jueves 19 a las 17:30h o el viernes 20 a las 10:00h. ¿Cuál te viene mejor?', delay: 5400 },
+  { type: 'user', text: 'El viernes a las 10, perfecto', delay: 7200 },
+  { type: 'typing', delay: 7900 },
+  { type: 'bot', text: '✅ ¡Listo! Cita reservada para el viernes 20 a las 10:00h. Te enviaré un recordatorio el jueves por la tarde. ¿Cuál es tu nombre completo?', delay: 8400 },
+];
+
+let msgIndex = 0;
+const chatBody = document.getElementById('chatBody');
+
+function getTime() {
+  const now = new Date();
+  return now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+}
+
+function appendMsg(type, text) {
+  if (type === 'typing') {
+    const el = document.createElement('div');
+    el.className = 'typing-indicator';
+    el.id = 'typing';
+    el.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+    chatBody.appendChild(el);
+    requestAnimationFrame(() => { el.classList.add('visible'); });
+    return;
+  }
+  const existing = document.getElementById('typing');
+  if (existing) existing.remove();
+
+  const div = document.createElement('div');
+  div.className = `msg msg-${type}`;
+  div.innerHTML = `${text}<div class="msg-time">${getTime()} ${type === 'bot' ? '✓✓' : ''}</div>`;
+  chatBody.appendChild(div);
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => { div.classList.add('visible'); });
+  });
+  chatBody.scrollTop = chatBody.scrollHeight;
+}
+
+function runChat() {
+  if (msgIndex >= messages.length) {
+    setTimeout(() => {
+      chatBody.innerHTML = '';
+      msgIndex = 0;
+      runChat();
+    }, 5000);
+    return;
+  }
+  const m = messages[msgIndex];
+  setTimeout(() => {
+    appendMsg(m.type, m.text);
+    msgIndex++;
+    runChat();
+  }, msgIndex === 0 ? m.delay : (m.delay - messages[msgIndex - 1].delay));
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(runChat, 600);
+});
+
+// ─── SCROLL REVEAL ───
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('in');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ─── FORM SUBMIT ───
+function handleSubmit() {
+  const name = document.getElementById('f-name').value.trim();
+  const clinic = document.getElementById('f-clinic').value.trim();
+  const phone = document.getElementById('f-phone').value.trim();
+
+  if (!name || !clinic || !phone) {
+    alert('Por favor rellena tu nombre, clínica y teléfono.');
+    return;
+  }
+
+  const btn = document.querySelector('.cta-submit');
+  btn.textContent = '✓ ¡Recibido! Te contactamos en menos de 24h.';
+  btn.style.background = '#27ae60';
+  btn.disabled = true;
+}
+</script>
+</body>
+</html>
